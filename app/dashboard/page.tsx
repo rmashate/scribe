@@ -3,7 +3,15 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
-async function getUserPosts(userId: string) {
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  published: boolean;
+  updatedAt: Date;
+};
+
+async function getUserPosts(userId: string): Promise<Post[]> {
   return prisma.post.findMany({
     where: { authorId: userId },
     orderBy: { updatedAt: "desc" },
@@ -35,7 +43,7 @@ export default async function DashboardPage() {
 
       {posts.length > 0 ? (
         <div className="border border-border rounded-lg divide-y divide-border">
-          {posts.map((post) => (
+          {posts.map((post: Post) => (
             <div
               key={post.id}
               className="p-4 flex items-center justify-between gap-4"
