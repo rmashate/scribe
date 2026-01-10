@@ -4,6 +4,8 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Editor } from "@/components/editor/Editor";
+import { useAutosave } from "@/hooks/useAutosave";
+import { formatDate } from "@/lib/utils";
 
 interface Post {
   id: string;
@@ -23,6 +25,13 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  const { isSaving: isAutosaving, lastSaved, hasUnsavedChanges } = useAutosave({
+    data: { title, content },
+    postId: id,
+    interval: 30000, // 30 seconds
+    onError: (err) => console.error("Autosave error:", err),
+  });
 
   useEffect(() => {
     async function fetchPost() {
@@ -120,12 +129,24 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <Link
-          href="/dashboard"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          &larr; Back to Dashboard
-        </Link>
+        <div className="flex items-center gap-4">
+          <Link
+            href="/dashboard"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            &larr; Back to Dashboard
+          </Link>
+          {/* Autosave status */}
+          <span className="text-xs text-muted-foreground">
+            {isAutosaving ? (
+              "Saving..."
+            ) : hasUnsavedChanges ? (
+              "Unsaved changes"
+            ) : lastSaved ? (
+              `Saved ${formatDate(lastSaved)}`
+            ) : null}
+          </span>
+        </div>
         <div className="flex items-center gap-2">
           <button
             onClick={handleDelete}

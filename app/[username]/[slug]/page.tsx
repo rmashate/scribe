@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import { formatDate } from "@/lib/utils";
+import { formatDate, getReadingTime } from "@/lib/utils";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
@@ -79,7 +79,7 @@ export default async function PostPage({ params }: { params: Promise<{ username:
                   {post.author.name || post.author.username}
                 </Link>
                 <p className="text-sm">
-                  {formatDate(post.publishedAt || post.createdAt)}
+                  {formatDate(post.publishedAt || post.createdAt)} &middot; {getReadingTime(post.content)} min read
                 </p>
               </div>
             </div>

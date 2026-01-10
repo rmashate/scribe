@@ -4,7 +4,21 @@ import { Footer } from "@/components/layout/Footer";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
-async function getFeaturedPosts() {
+type PostWithAuthor = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  publishedAt: Date | null;
+  createdAt: Date;
+  author: {
+    name: string | null;
+    username: string;
+    image: string | null;
+  };
+};
+
+async function getFeaturedPosts(): Promise<PostWithAuthor[]> {
   try {
     const posts = await prisma.post.findMany({
       where: { published: true },
