@@ -13,6 +13,12 @@ export function Header() {
           Scribe
         </Link>
         <nav className="flex items-center gap-4">
+          <Link
+            href="/explore"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Explore
+          </Link>
           {status === "loading" ? (
             <div className="h-8 w-20 bg-muted animate-pulse rounded" />
           ) : session ? (
