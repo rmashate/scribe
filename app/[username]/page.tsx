@@ -5,6 +5,15 @@ import { formatDate } from "@/lib/utils";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  publishedAt: Date | null;
+  createdAt: Date;
+};
+
 async function getUser(username: string) {
   // Remove @ prefix if present
   const cleanUsername = username.startsWith("@") ? username.slice(1) : username;
@@ -65,7 +74,7 @@ export default async function UserBlogPage({ params }: { params: Promise<{ usern
 
         {user.posts.length > 0 ? (
           <div className="space-y-8">
-            {user.posts.map((post) => (
+            {user.posts.map((post: Post) => (
               <article key={post.id} className="border-b border-border pb-8 last:border-0">
                 <Link href={`/@${user.username}/${post.slug}`}>
                   <h2 className="text-xl font-semibold hover:underline mb-2">
