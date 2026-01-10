@@ -4,7 +4,21 @@ import { Footer } from "@/components/layout/Footer";
 import { prisma } from "@/lib/prisma";
 import { formatDate } from "@/lib/utils";
 
-async function getFeaturedPosts() {
+type PostWithAuthor = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string | null;
+  publishedAt: Date | null;
+  createdAt: Date;
+  author: {
+    name: string | null;
+    username: string;
+    image: string | null;
+  };
+};
+
+async function getFeaturedPosts(): Promise<PostWithAuthor[]> {
   try {
     const posts = await prisma.post.findMany({
       where: { published: true },
@@ -104,7 +118,7 @@ export default async function HomePage() {
             <h2 className="text-2xl font-bold mb-8">Recent Posts</h2>
             {posts.length > 0 ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
+                {posts.map((post: PostWithAuthor) => (
                   <article
                     key={post.id}
                     className="border border-border rounded-lg p-6 hover:border-foreground/20 transition-colors"
